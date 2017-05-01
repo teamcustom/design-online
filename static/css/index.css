@@ -1,0 +1,8 @@
+
+body{font:12px arial;margin:0}
+#header{height:50px;line-height:50px;margin-bottom:10px}
+#content{width:100%;float:left;margin-right:-240px}
+#content_inner{height:400px;margin-right:240px}
+#side{width:230px;height:400px;float:right}
+#footer{height:50px;margin-top:10px}
+.clear{clear:both}

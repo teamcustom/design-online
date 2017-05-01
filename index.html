@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+    <title>demo</title>
+    <link rel="stylesheet" type="text/css" href="./static/css/index.css" />
+    <script src="./static/js/fabric.js"></script>
+</head>
+
+<body>
+<div id="header">在线定制</div>
+
+<div id="content">
+    <div id="content_inner">
+        <canvas id="canvas" width="800" height="600"></canvas>
+    </div>
+</div>
+<div id="side">
+    <div data-target="addtext" class="txt brancebg operate-text">
+        <button class="btn" onclick="addText()">Add text</button>
+        <input type="text" id="add-text" name="add-text" value="Mickey">
+    </div>
+    <div data-target="addimages" class="txt brancebg operate-image">
+        <button type="button" class="btn image1" onclick="addImage1()">Add Image</button>
+    </div>
+    <div data-target="addimages" class="txt brancebg operate-image">
+        <input type="file" name="file" onchange="imgPreview(this)" />
+    </div>
+</div>
+<div class="clear"></div>
+
+<div id="footer"></div>
+</body>
+</html>
+
+<script>
+    var canvas = new fabric.Canvas('canvas');
+    var getRandomInt = fabric.util.getRandomInt;
+
+    function pad(str, length) {
+        while (str.length < length) {
+            str = '0' + str;
+        }
+        return str;
+    }
+    function getRandomColor() {
+        return (
+                pad(getRandomInt(0, 255).toString(16), 2) +
+                pad(getRandomInt(0, 255).toString(16), 2) +
+                pad(getRandomInt(0, 255).toString(16), 2)
+        );
+    }
+    function getRandomNum(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    function getRandomLeftTop() {
+        var offset = 50;
+        return {
+            left: fabric.util.getRandomInt(0 + offset, 700 - offset),
+            top: fabric.util.getRandomInt(0 + offset, 500 - offset)
+        };
+    }
+
+    function addText () {
+        var text = document.getElementById("add-text").value;
+
+        var textSample = new fabric.IText(text, {
+            left: getRandomInt(350, 400),
+            top: getRandomInt(350, 400),
+            fontFamily: 'helvetica',
+            angle: getRandomInt(-10, 10),
+            fill: '#' + getRandomColor(),
+            scaleX: 0.5,
+            scaleY: 0.5,
+            fontWeight: '',
+            originX: 'left',
+            hasRotatingPoint: true,
+            centerTransform: true
+        });
+
+        canvas.add(textSample);
+    }
+
+    function addImage1 () {
+        addImage('https://www.baidu.com/img/bd_logo1.png', 0.1, 1);
+    };
+
+    function addImage(imageName, minScale, maxScale) {
+        var coord = getRandomLeftTop();
+
+        fabric.Image.fromURL(imageName, function(image) {
+
+            image.set({
+                left: coord.left,
+                top: coord.top,
+                angle: getRandomInt(-10, 10)
+            })
+                    .scale(getRandomNum(minScale, maxScale))
+                    .setCoords();
+
+            canvas.add(image);
+        });
+    };
+
+    function imgPreview(fileDom){
+        //判断是否支持FileReader
+        if (window.FileReader) {
+            var reader = new FileReader();
+        } else {
+            alert("您的设备不支持图片预览功能，如需该功能请升级您的设备！");
+        }
+
+        //获取文件
+        var file = fileDom.files[0];
+        var imageType = /^image\//;
+        //是否是图片
+        if (!imageType.test(file.type)) {
+            alert("请选择图片！");
+            return;
+        }
+        //读取完成
+        reader.onload = function(e) {
+            /*//获取图片dom
+            var img = document.getElementById("preview");
+            //图片路径设置为读取的图片
+            img.src = e.target.result;*/
+            debugger;
+            addImage(e.target.result, 0.1, 1);
+        };
+        reader.readAsDataURL(file);
+    }
+</script>
