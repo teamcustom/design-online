@@ -6,77 +6,102 @@
     <script src="./static/js/fabric.js"></script>
 </head>
 <body>
-    <canvas id="c" width="600" height="500"></canvas>
+<canvas id="c" width="600" height="500"></canvas>
 </body>
 </html>
 <script>
     (function() {
-        fabric.Object.prototype.transparentCorners = false;
-
-        var canvas = this.__canvas = new fabric.Canvas('c', {
-            backgroundColor: '#333',
-            HOVER_CURSOR: 'pointer'
-        });
-
-        var PolaroidPhoto = fabric.util.createClass(fabric.Object, fabric.Observable, {
-            H_PADDING: 20,
-            V_PADDING: 50,
-            originX: 'center',
-            originY: 'center',
-            initialize: function(src, options) {
-                this.callSuper('initialize', options);
-                this.image = new Image();
-                this.image.src = src;
-                this.image.onload = (function() {
-                    this.width = this.image.width;
-                    this.height = this.image.height;
-                    this.loaded = true;
-                    this.setCoords();
-                    this.fire('image:loaded');
-                }).bind(this);
-            },
-            _render: function(ctx) {
-                if (this.loaded) {
-                    ctx.fillStyle = '#fff';
-                    ctx.fillRect(
-                            -(this.width / 2) - this.H_PADDING,
-                            -(this.height / 2) - this.H_PADDING,
-                            this.width + this.H_PADDING * 2,
-                            this.height + this.V_PADDING * 2);
-                    ctx.drawImage(this.image, -this.width / 2, -this.height / 2);
-                }
-            }
-        });
-        var photo = new PolaroidPhoto('./static/img/pug.jpg', {
-            top: 200,
-            left: 200,
-            scaleX: 0.2,
-            scaleY: 0.2
-        });
-        photo.on('image:loaded', canvas.renderAll.bind(canvas));
-        photo.drawBorders = photo.drawCorners = function() { return this };
-
-        function makeHandler(arg) {
-            return function(e) {
-                if (e.target) {
-                    e.target.animate('left', arg, {
-                        duration: 100,
-                        onChange: canvas.renderAll.bind(canvas)
-                    });
-                }
-            };
-        }
-        canvas.on({
-            'mouse:down': makeHandler('+10'),
-            'mouse:up': makeHandler('-10')
-        });
+        var canvas = new fabric.Canvas('c');
 
         var line = new fabric.Line([ 0, 0,0, 600], {
             left: 300,
             top: 0,
-            stroke: '#fff'
-        })
+            stroke: '#000'
+        });
+        var lineCenterPoint = line.getCenterPoint();
         canvas.add(line);
-        canvas.add(photo);
+
+        fabric.Image.fromURL('./static/img/pug_small.jpg', function(img) {
+            img.scale(0.5).set({
+                left: 150,
+                top: 150/*,
+                 angle: -15*/
+            });
+            var iii = canvas.add(img);
+            iii.setActiveObject(img);
+
+            var isEnter = false;
+            var target = null;
+            iii.on({
+                'mouse:down': function(e) {
+                    isEnter = true;
+                    if(e.target){
+                        target = e.target;
+                    }
+                    console.log('mouse down');
+                },
+                'mouse:move': function(e) {
+                    if(isEnter && target){
+                        setTimeout(function moveToCenter (){
+                            var targetCenterPoint = target.getCenterPoint();
+                            console.log(targetCenterPoint.x+'-----'+targetCenterPoint.y);
+                            var xDeviation = targetCenterPoint.x - lineCenterPoint.x;
+                            var yDeviation = targetCenterPoint.y - lineCenterPoint.y;
+                            if(Math.abs(xDeviation) < 10 && Math.abs(xDeviation)!=0){
+                                var pos = '';
+                                if (xDeviation < 0) {
+                                    pos = '+='+ Math.abs(xDeviation);
+                                }else if (xDeviation > 0) {
+                                    pos = '-='+ Math.abs(xDeviation);
+                                }
+                                target.animate('left', pos, {
+                                    duration: 100,
+                                    onChange: canvas.renderAll.bind(canvas)
+                                });
+                            }
+                            /*target.animate('left', '+=100', {
+                             duration: 100,
+                             onChange: canvas.renderAll.bind(canvas)
+                             });*/
+                        },100)
+//                        moveToCenter(target);
+                    }
+                },
+                'mouse:up': function(e) {
+                    console.log('mouse up');
+                    isEnter = false;
+                },
+                'mouse:enter': function(e) {
+                    console.log('mouse enter');
+                },
+                'mouse:out': function(e) {
+                    console.log('mouse out');
+                }
+            });
+        });
+
+        function moveToCenter (target){
+
+            var targetCenterPoint = target.getCenterPoint();
+            console.log(targetCenterPoint.x+'-----'+targetCenterPoint.y);
+            var xDeviation = targetCenterPoint.x - lineCenterPoint.x;
+            var yDeviation = targetCenterPoint.y - lineCenterPoint.y;
+            if(Math.abs(xDeviation) < 10 && Math.abs(xDeviation)!=0){
+                var pos = '';
+                if (xDeviation < 0) {
+                    pos = '+='+ Math.abs(xDeviation);
+                }else if (xDeviation > 0) {
+                    pos = '-='+ Math.abs(xDeviation);
+                }
+                target.animate('left', pos, {
+                    duration: 100,
+                    onChange: canvas.renderAll.bind(canvas)
+                });
+            }
+            /*target.animate('left', '+=100', {
+             duration: 100,
+             onChange: canvas.renderAll.bind(canvas)
+             });*/
+        }
     })();
 </script>
