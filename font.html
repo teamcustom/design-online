@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+    <title>demo</title>
+    <link rel="stylesheet" type="text/css" href="./static/css/index.css" />
+    <script src="./static/js/fabric.js"></script>
+</head>
+
+<body>
+<div id="header">在线定制</div>
+
+<div id="content">
+    <div id="content_inner">
+        <canvas id="canvas" width="800" height="600"></canvas>
+    </div>
+</div>
+<div id="side">
+    <div data-target="addtext" class="txt brancebg operate-text">
+        <button class="btn" onclick="addText()">Add text</button>
+        <input type="text" id="add-text" name="add-text" value="Mickey">
+    </div>
+    <div data-target="addtext" class="txt brancebg operate-text">
+        <button class="btn" onclick="addaddText1()">Add text</button>
+        <input type="text" id="add-text1" name="add-text" value="Mickey here">
+    </div>
+    <div data-target="addtext" class="txt brancebg operate-text">
+        <button class="btn" onclick="addaddText2()">Add Circle text</button>
+        <input type="text" id="add-text2" name="add-text" value="Mickey here">
+    </div>
+    <div data-target="addtext" class="txt brancebg operate-text">
+        <button class="btn" onclick="addaddText3()">Add Art text</button>
+        <input type="text" id="add-text2" name="add-text" value="Mickey here">
+    </div>
+</div>
+<div class="clear"></div>
+
+<div id="footer"></div>
+</body>
+</html>
+
+<script>
+    var canvas = new fabric.Canvas('canvas');
+    var getRandomInt = fabric.util.getRandomInt;
+
+    function pad(str, length) {
+        while (str.length < length) {
+            str = '0' + str;
+        }
+        return str;
+    }
+    function getRandomColor() {
+        return (
+                pad(getRandomInt(0, 255).toString(16), 2) +
+                pad(getRandomInt(0, 255).toString(16), 2) +
+                pad(getRandomInt(0, 255).toString(16), 2)
+        );
+    }
+    function addText () {
+        var text = document.getElementById("add-text").value;
+
+        var textSample = new fabric.IText(text, {
+            left: getRandomInt(350, 400),
+            top: getRandomInt(350, 400),
+            fontFamily: 'helvetica',
+            angle: getRandomInt(-10, 10),
+            fill: '#' + getRandomColor(),
+            scaleX: 0.5,
+            scaleY: 0.5,
+            fontWeight: '',
+            originX: 'left',
+            hasRotatingPoint: true,
+            centerTransform: true
+        });
+
+        canvas.add(textSample);
+    }
+
+    function addaddText1  () {
+        var iText = new fabric.IText('lorem ipsum\ndolor\nsit Amet\nconsectetur', {
+            left: 100,
+            top: 150,
+            fontFamily: 'Helvetica',
+            fill: '#333',
+            styles: {
+                0: {
+                    0: { fill: 'red', fontSize: 20 },
+                    1: { fill: 'red', fontSize: 30 },
+                    2: { fill: 'red', fontSize: 40 },
+                    3: { fill: 'red', fontSize: 50 },
+                    4: { fill: 'red', fontSize: 60 },
+
+                    6: { textBackgroundColor: 'yellow' },
+                    7: { textBackgroundColor: 'yellow' },
+                    8: { textBackgroundColor: 'yellow' },
+                    9: { textBackgroundColor: 'yellow' }
+                },
+                1: {
+                    0: { textDecoration: 'underline' },
+                    1: { textDecoration: 'underline' },
+                    2: { fill: 'green', fontStyle: 'italic', textDecoration: 'underline' },
+                    3: { fill: 'green', fontStyle: 'italic', textDecoration: 'underline' },
+                    4: { fill: 'green', fontStyle: 'italic', textDecoration: 'underline' }
+                },
+                2: {
+                    0: { fill: 'blue', fontWeight: 'bold' },
+                    1: { fill: 'blue', fontWeight: 'bold' },
+                    2: { fill: 'blue', fontWeight: 'bold' },
+
+                    4: { fontFamily: 'Courier', textDecoration: 'line-through' },
+                    5: { fontFamily: 'Courier', textDecoration: 'line-through' },
+                    6: { fontFamily: 'Courier', textDecoration: 'line-through' },
+                    7: { fontFamily: 'Courier', textDecoration: 'line-through' }
+                },
+                3: {
+                    0: { fontFamily: 'Impact', fill: '#666', textDecoration: 'line-through' },
+                    1: { fontFamily: 'Impact', fill: '#666', textDecoration: 'line-through' },
+                    2: { fontFamily: 'Impact', fill: '#666', textDecoration: 'line-through' },
+                    3: { fontFamily: 'Impact', fill: '#666', textDecoration: 'line-through' },
+                    4: { fontFamily: 'Impact', fill: '#666', textDecoration: 'line-through' }
+                }
+            }
+        });
+
+        var iText2 = new fabric.IText('foo bar\nbaz\nquux', {
+            left: 400,
+            top: 150,
+            fontFamily: 'Helvetica',
+            fill: '#333',
+            styles: {
+                0: {
+                    0: { fill: 'red' },
+                    1: { fill: 'red' },
+                    2: { fill: 'red' }
+                },
+                2: {
+                    0: { fill: 'blue' },
+                    1: { fill: 'blue' },
+                    2: { fill: 'blue' },
+                    3: { fill: 'blue' }
+                }
+            }
+        });
+
+        canvas.add(iText, iText2);
+    }
+
+    function addaddText2  () {
+        var text = document.getElementById("add-text").value;
+        var ctx=canvas.getContext("2d");
+        ctx.font = 'bold 40px Arial';
+        drawCircleText(ctx,text,150,150,100,0,true,'red');
+        canvas.add(ctx);
+    }
+    function drawCircleText(ctx,text,x,y,radius,startAngle,isFill,color){
+        var ctx=canvas.getContext("2d");
+        var startRad = Math.PI*startAngle/180;
+        var len = text.length;
+        var numRadsPerLetter = Math.PI * 2/len;
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.rotate(startRad);
+        for(var i=0;i<len;i++){
+            ctx.save();
+            ctx.rotate(i*numRadsPerLetter);
+            if(isFill){
+                ctx.fillStyle = color;
+                ctx.fillText(text[i],0,-radius);
+            }else{
+                ctx.strokeStyle = color;
+                ctx.strokeText(text[i],0,-radius);
+            }
+            ctx.restore();
+        }
+        ctx.restore();
+
+    }
+
+    function addaddText3  () {
+        var text = document.getElementById("add-text").value;
+        var ctx=canvas.getContext("2d");
+
+    }
+    function drawArtText(ctx,text,x,y,isFill,color){
+        var ctx=canvas.getContext("2d");
+        var startRad = Math.PI*startAngle/180;
+        var len = text.length;
+        var numRadsPerLetter = Math.PI * 2/len;
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.rotate(startRad);
+        for(var i=0;i<len;i++){
+            ctx.save();
+            ctx.rotate(i*numRadsPerLetter);
+            if(isFill){
+                ctx.fillStyle = color;
+                ctx.fillText(text[i],0,-radius);
+            }else{
+                ctx.strokeStyle = color;
+                ctx.strokeText(text[i],0,-radius);
+            }
+            ctx.restore();
+        }
+        ctx.restore();
+
+    }
+    addaddText3();
+</script>
