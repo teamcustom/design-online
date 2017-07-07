@@ -1,0 +1,37 @@
+[
+  {
+    "displayName" : "BODY",
+    "url": "./static/img/body.png",
+    "isDefault": true,
+    "accessories": "",
+    "type":"BODY"
+  },
+  {
+    "displayName" : "LEFT",
+    "url": "./static/img/left.png",
+    "isDefault": true,
+    "accessories": "",
+    "type":"GUSSET"
+  },
+  {
+    "displayName" : "RIGHT",
+    "url": "./static/img/right.png",
+    "isDefault": true,
+    "accessories": "",
+    "type":"GUSSET"
+  },
+  {
+    "displayName" : "RIGHT-RED",
+    "url": "./static/img/red-right.png",
+    "isDefault": false,
+    "accessories": "color",
+    "type":"GUSSET"
+  },
+  {
+    "displayName" : "RIGHT-BADGE",
+    "url": "./static/img/logp-red-right.png",
+    "isDefault": false,
+    "accessories": "badge",
+    "type":"GUSSET"
+  }
+]

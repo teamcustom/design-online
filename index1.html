@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+    <title>在线定制</title>
+    <link rel="stylesheet" type="text/css" href="./static/css/index.css" />
+    <script src="./static/js/fabric.js"></script>
+    <script src="./static/js/sugar.min.js"></script>
+    <script src="./static/js/jquery.min.js"></script>
+    <script src="./static/js/jquerymy-1.2.10.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+    <div class="content_inner">
+        <canvas id="canvas" width="600" height="600"></canvas>
+    </div>
+</div>
+<div class="side">
+    <form way-data="designData" way-persistent>
+        <!--select product/style/template-->
+        <div id="design-prduct">
+            step 1<br/>
+            <a href="#" onclick="changeProduct()">change product</a>
+            <br/>
+            Sublimation<input type="checkbox" id="design-sublimation" name="design-sublimation" value="1" onchange="changeSublimation" click="changeSublimation(this)"/>
+            <br/>
+            <a href="#" onclick="changeColor()">change color</a>
+        </div>
+        <!--select accessories/color-->
+        <div id="design-accessories">
+            step 2<br/>
+            <div>
+                选择部件
+                <select onchange="partChange(this)">
+                    <option value ="">请选择</option>
+                    <option value ="BODY">BODY</option>
+                    <option value ="LEFT">LEFT GUSSET</option>
+                    <option value="RIGHT">RIGHT GUSSET</option>
+                </select>
+            </div>
+            <div>
+                <div id="design-mainbody" style="display: none">
+                    选择颜色1
+                    <select id="design-mainbody-color" onchange="colorChange(this)">
+                        <option value="RED">RED</option>
+                        <option value="GRAY">GRAY</option>
+                        <option value="BLACK">BLACK</option>
+                    </select>
+                    <br/>
+                    选择配饰1
+                    <select id="design-mainbody-ornament" onchange="ornamentChange(this)">
+                        <option value="ornament1">ornament--1</option>
+                        <option value="ornament2">ornament--3</option>
+                        <option value="ornament3">ornament--3</option>
+                    </select>
+                </div>
+                <div id="design-left" style="display: none">
+                    选择颜色2
+                    <select id="design-left-color" onchange="colorChange(this)">
+                        <option value="RED">RED</option>
+                        <option value="GRAY">GRAY</option>
+                        <option value="BLACK">BLACK</option>
+                    </select>
+                    <br/>
+                    选择配饰2
+                    <select id="design-left-ornament" onchange="ornamentChange(this)">
+                        <option value="ornament1">ornament--1</option>
+                        <option value="ornament2">ornament--3</option>
+                        <option value="ornament3">ornament--3</option>
+                    </select>
+                </div>
+                <div id="design-right" style="display: none">
+                    选择颜色3
+                    <select id="design-right-color" onchange="colorChange(this)">
+                        <option value="RED">RED</option>
+                        <option value="GRAY">GRAY</option>
+                        <option value="BLACK">BLACK</option>
+                    </select>
+                    <br/>
+                    选择配饰3
+                    <select id="design-right-ornament" onchange="ornamentChange(this)">
+                        <option value="ornament1">ornament--1</option>
+                        <option value="ornament2">ornament--3</option>
+                        <option value="ornament3">ornament--3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--add text/iamge-->
+        <div id="design-custom">
+            step 3<br/>
+            <div>
+                <button class="btn" onclick="addText()">Add text</button>
+                <input type="text" id="design-add-text" name="add-text" value="Mickey">
+            </div>
+            <div>
+                选择图片:<input type="file" name="file" onchange="imgPreview(this)" />
+                <button class="btn" onclick="removeWhite()">去除选中图片的白色</button>
+            </div>
+        </div>
+        <!--add text/iamge-->
+        <div id="design-operator">
+            operator<br/>
+            <button class="btn" onclick="">next</button>
+            <button class="btn" onclick="save()">Save</button>
+            <button class="btn" onclick="share()">Share</button>
+        </div>
+    </form>
+</div>
+<div class="footer">
+</div>
+</body>
+</html>
+
+<script>
+    var productId = '';
+    var googdsId = '';
+    var isSublimation = false;
+    var imgMap = {};
+    var part = '';
+    var $mainbody = $('#design-mainbody');
+    var $left = $('#design-left');
+    var $right = $('#design-right');
+    var lineCenterPoint = null;
+
+    function changeProduct () {
+        productId = 111;
+    }
+
+    function changeColor () {
+        googdsId = 222;
+    }
+
+    $("#design-sublimation").change(function(event) {
+        isSublimation = event.target.checked;
+    })
+
+    function partChange(target) {
+        part = $(target).val();
+        if(part==='BODY'){
+            $mainbody.show();
+            $left.hide();
+            $right.hide();
+        }else if (part==='LEFT') {
+            $mainbody.hide();
+            $left.show();
+            $right.hide();
+        }else if (part==='RIGHT') {
+            $mainbody.hide();
+            $left.hide();
+            $right.show();
+        }
+
+    };
+
+    function colorChange(target) {
+        var color = $(target).val();
+        if(part==='BODY'){
+            canvas.remove(imgMap[part]);
+            addImage1('./static/img/left.png','BODY');
+        }else if (part==='LEFT') {
+
+        }else if (part==='RIGHT') {
+        }
+    };
+
+    function ornamentChange(target) {
+        var ornament = $(target).val();
+    };
+
+    function addImage1(imageUrl, imageName) {
+        fabric.Image.fromURL(imageUrl, function(image) {
+
+            image.set({
+                left: 0,
+                top: 0,
+                hasBorders: false,
+                hasControls: false,
+                selectable: false
+            })
+                .scale(1)
+                .setCoords();
+
+            canvas.add(image);
+            imgMap[imageName] = image;
+        });
+    };
+
+    function addImage (imageUrl) {
+        fabric.Image.fromURL(imageUrl, function(img) {
+            img.scale(0.5).set({
+                left: 150,
+                top: 150/*,
+                 angle: -15*/
+            });
+            var iii = canvas.add(img);
+            iii.setActiveObject(img);
+
+            var isEnter = false;
+            var target = null;
+            iii.on({
+                'mouse:down': function(e) {
+                    isEnter = true;
+                    if(e.target){
+                        target = e.target;
+                    }
+                    console.log('mouse down');
+                },
+                'mouse:move': function(e) {
+                    if(isEnter && target){
+                        setTimeout(function moveToCenter (){
+                            var targetCenterPoint = target.getCenterPoint();
+                            console.log(targetCenterPoint.x+'-----'+targetCenterPoint.y);
+                            var xDeviation = targetCenterPoint.x - lineCenterPoint.x;
+                            var yDeviation = targetCenterPoint.y - lineCenterPoint.y;
+                            if(Math.abs(xDeviation) < 10 && Math.abs(xDeviation)!=0){
+                                var pos = '';
+                                if (xDeviation < 0) {
+                                    pos = '+='+ Math.abs(xDeviation);
+                                }else if (xDeviation > 0) {
+                                    pos = '-='+ Math.abs(xDeviation);
+                                }
+                                target.animate('left', pos, {
+                                    duration: 100,
+                                    onChange: canvas.renderAll.bind(canvas)
+                                });
+                            }
+                            /*target.animate('left', '+=100', {
+                             duration: 100,
+                             onChange: canvas.renderAll.bind(canvas)
+                             });*/
+                        },100)
+//                        moveToCenter(target);
+                    }
+                },
+                'mouse:up': function(e) {
+                    console.log('mouse up');
+                    isEnter = false;
+                },
+                'mouse:enter': function(e) {
+                    console.log('mouse enter');
+                },
+                'mouse:out': function(e) {
+                    console.log('mouse out');
+                }
+            });
+        });
+    }
+
+    function addText () {
+        var text = document.getElementById("add-text").value;
+
+        var textSample = new fabric.IText(text, {
+            left: 300,
+            top: 200,
+            fontFamily: 'helvetica',
+            fill: '#000',
+            scaleX: 0.5,
+            scaleY: 0.5,
+            fontWeight: '',
+            originX: 'left',
+            hasRotatingPoint: true,
+            centerTransform: true
+        });
+
+        canvas.add(textSample);
+    }
+
+    function imgPreview(fileDom){
+        //判断是否支持FileReader
+        if (window.FileReader) {
+            var reader = new FileReader();
+        } else {
+            alert("您的设备不支持图片预览功能，如需该功能请升级您的设备！");
+        }
+
+        //获取文件
+        var file = fileDom.files[0];
+        var imageType = /^image\//;
+        //是否是图片
+        if (!imageType.test(file.type)) {
+            alert("请选择图片！");
+            return;
+        }
+        //读取完成
+        reader.onload = function(e) {
+            /*//获取图片dom
+             var img = document.getElementById("preview");
+             //图片路径设置为读取的图片
+             img.src = e.target.result;*/
+            debugger;
+            addImage(e.target.result, e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function applyFilter(index, filter) {
+        var obj = canvas.getActiveObject();
+        obj.filters[index] = filter;
+        obj.applyFilters(canvas.renderAll.bind(canvas));
+    }
+
+    function removeWhite() {
+        applyFilter(2, this.checked && new filter.RemoveWhite({
+                threshold: 40,
+                distance: 140
+            }));
+    }
+
+    function moveToCenter (target){
+
+        var targetCenterPoint = target.getCenterPoint();
+        console.log(targetCenterPoint.x+'-----'+targetCenterPoint.y);
+        var xDeviation = targetCenterPoint.x - lineCenterPoint.x;
+        var yDeviation = targetCenterPoint.y - lineCenterPoint.y;
+        if(Math.abs(xDeviation) < 10 && Math.abs(xDeviation)!=0){
+            var pos = '';
+            if (xDeviation < 0) {
+                pos = '+='+ Math.abs(xDeviation);
+            }else if (xDeviation > 0) {
+                pos = '-='+ Math.abs(xDeviation);
+            }
+            target.animate('left', pos, {
+                duration: 100,
+                onChange: canvas.renderAll.bind(canvas)
+            });
+        }
+        /*target.animate('left', '+=100', {
+         duration: 100,
+         onChange: canvas.renderAll.bind(canvas)
+         });*/
+    }
+
+    function save(){
+        console.log(JSON.stringify(canvas));
+    }
+
+    function share(){
+        console.log(JSON.stringify(canvas));
+    }
+
+    function init () {
+        addImage1('./static/img/left.png','LEFT');
+        addImage1('./static/img/right.png','RIGHT');
+        addImage1('./static/img/body.png','BODY');
+        var line = new fabric.Line([ 0, 0,0, 600], {
+            left: 300,
+            top: 0,
+            stroke: '#000',
+            hasBorders: false,
+            hasControls: false,
+            selectable: false
+        });
+        lineCenterPoint = line.getCenterPoint();
+        canvas.add(line);
+    };
+    init();
+</script>
