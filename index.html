@@ -7,204 +7,265 @@
     <script src="./static/js/fabric.js"></script>
     <script src="./static/js/vue.min.js"></script>
     <script src="./static/js/color-thief.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-<div class="content">
 
-    <div class="content_inner">
-        <canvas id="canvas" width="600" height="600"></canvas>
-        <div id='canvasAbs' style="position:absolute; border:1px dotted black;  ">
-            <canvas id="canvas1"></canvas>
-        </div>
-    </div>
-</div>
-<div class="side" id = "main">
-        totalPrice:{{basePrice+partPrice+textPrice+imagePrice}}
-        <!--select product/style/template-->
-        <div>
-            step 1<br/>
-            <a href="#" @click="changeProduct">change product</a>
-            <br/>
-            Sublimation<input type="checkbox" :value="isSublimation"/>
-            <br/>
-            <a href="#" @click="changeColor">change color</a>
-            price:{{basePrice}}
-        </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <!--select accessories/color-->
-        <div>
-            step 2<br/>
-            <div>
-                price:{{partPrice}}
-                <br/>
-                select part
-                <select v-model="partSelected">
-                    <option value="">Please Select</option>
-                    <option v-for="(option,index) in partOptions" :value="option.value">
-                        {{ option.text }}
-                    </option>
-                </select>
-            </div>
-            <div>
-                <div v-for="(option,index) in partOptions" v-show="partSelected==option.value">
-                    <span>color-{{index}}</span>
-                    <select v-model="partColorValue">
-                        <option v-for="(color,index) in option.color" :value="color.value">
-                            {{ color.text }}
-                        </option>
-                    </select>
-                    <br/>
-                    <span>ornament-{{index}}</span>
-                    <select v-model="partOrnamentValue">
-                        <option v-for="(ornament,index) in option.ornament" :value="ornament.value">
-                            {{ ornament.text }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <!--add text/iamge-->
-        <div>
-            step 3<br/>
-            <div>
-                <div>
-                    <button class="btn" @click="addText">Add text</button>
-                    <input type="text" v-model="customText" value="">
-                </div>
-                <div>
-                    <label for="font-family" style="display:inline-block">Font family:</label>
-                             <select v-model="fontFamily">
-                                <option value="">Please Select</option>
-                                <option v-for="(fontFamily,index) in fontJson.fontFamily" :value="fontFamily.value">
-                                    {{ fontFamily.text }}
-                                </option>
-                            </select>
-                            <br>
-                            <label for="text-align" style="display:inline-block">Text align:</label>
-                            <select v-model="textAlign">
-                                <option value="">Please Select</option>
-                                <option v-for="(textAlign,index) in fontJson.textAlign" :value="textAlign.value">
-                                    {{ textAlign.text }}
-                                </option>
-                            </select>
-                            <div>
-                                <label for="text-lines-bg-color">Background text color:</label>
-                                <input type="color" value="" size="10" v-model="textBgColor">
-                            </div>
-                            <div>
-                                <label for="text-font-size">Font size:</label>
-                                <input type="range" value="" min="1" max="120" step="1" v-model="fontSize">
-                            </div>
-                            <div>
-                                <label for="text-line-height">Line height:</label>
-                                <input type="range" value="" min="0" max="10" step="0.1" v-model="lineHeight">
-                            </div>
-                            <div>
-                                <label for="text-char-spacing">Char spacing:</label>
-                                <input type="range" value="" min="-200" max="800" step="10" v-model="charSpacing">
-                            </div>
-                            <label for="text-align" style="display:inline-block">Text align:</label>
-                            <select v-model="fontStyle">
-                                <option value="">Please Select</option>
-                                <option v-for="(fontStyle,index) in fontJson.fontStyle" :value="fontStyle.value">
-                                    {{ fontStyle.text }}
-                                </option>
-                            </select>
-                </div>
-                price:{{textPrice}} ----- 文字印刷怎么算价格
-            </div>
-            <div>
+<div class="row">
+    <div class="center-block">
 
-                <p @click="imgSelect=1">Select  Art Clip</p>
-                <p @click="imgSelect=2">Upload image</p>
-                <p @click="imgSelect=3">Add  my art</p>
-            </div>
-            <div v-if="imgSelect==1" style="border: 1px dashed #000;">
-                <div v-for="artImg in json.data.artImg" @click="clipSelect=artImg.name">
-                    <p>{{artImg.name}}</p>
-                    <div v-for="artImgValue in artImg.value" v-if="clipSelect==artImg.name">
-                        <img :src="artImgValue.url" @click="addImage(artImgValue.url)"/>
+        <div class="side col-md-4" id="main">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseOne">
+                                Product
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            price:{{basePrice}}
+                            <br/>
+                            <a href="#" @click="changeProduct">change product</a>
+                            <br/>
+                            Material: Fabric <input type="checkbox" :value="isFabric"/>
+                            <br/>
+                            Size:  <a href="#" @click="changeColor">change Size</a>
+                            <br/>
+                            Color: <a href="#" @click="changeColor">change color</a>
+                            <br/>
+                            <button class="btn" @click="collapseOneNext">next</button>
+                        </div>
                     </div>
                 </div>
-                <button class="btn" @click="removeWhite">remove white</button>
-            </div>
-            <div v-if="imgSelect==2">
-                select image:<input type="file" name="file" @change="imgPreview"/>
-                Palette:
-                <div class="swatches">
-                    <template v-for="color in paletteColor">
-                        <div class="swatch" :style="'background-color: ' + color"></div>
-                    </template>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo">
+                                Accessories
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div>
+                                price:{{partPrice}}
+                                <br/>
+                                select part
+                                <select v-model="partSelected">
+                                    <option value="">Please Select</option>
+                                    <option v-for="(option,index) in partOptions" :value="option.value">
+                                        {{ option.text }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div>
+                                <div v-for="(option,index) in partOptions" v-show="partSelected==option.value">
+                                    <span>color-{{index}}</span>
+                                    <select v-model="partColorValue">
+                                        <option v-for="(color,index) in option.color" :value="color.value">
+                                            {{ color.text }}
+                                        </option>
+                                    </select>
+                                    <br/>
+                                    <span>ornament-{{index}}</span>
+                                    <select v-model="partOrnamentValue">
+                                        <option v-for="(ornament,index) in option.ornament" :value="ornament.value">
+                                            {{ ornament.text }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn" @click="removeWhite">remove white</button>
-                <br>
-                <label style="display:inline-block">crafts:</label>
-                <select v-model="crafts">
-                    <option value="">Please Select</option>
-                    <option v-for="(crafts,index) in json.data.crafts" :value="crafts.value">
-                        {{ crafts.text }}
-                    </option>
-                </select>
-                <br>
-                <label style="display:inline-block">colors:</label>
-                <select v-model="crafts">
-                    <option value="">Please Select</option>
-                </select>
-                <br>
-                <label style="display:inline-block">width:</label>
-                <input type="text" v-model="customImgWidth" value="">
-                <br/>
-                <label style="display:inline-block">height:</label>
-                <input type="text" v-model="customImgHeight" value="">
-                <br/>
-                <label style="display:inline-block">angle:</label>
-                <input type="text" v-model="customImgAngle" value="">
-            </div>
-            <div v-if="imgSelect==3">
-                <div v-for="custImg in json.data.custImg">
-                    <img :src="custImg.url" @click="addImage(custImg.url)"/>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree">
+                                Logo
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul id="myTab" class="nav nav-tabs">
+                                <li class="active"><a href="#text" data-toggle="tab">Text</a></li>
+                                <li><a href="#image" data-toggle="tab">Image</a></li>
+                                <li><a href="#num" data-toggle="tab">Name&Num</a></li>
+                            </ul>
+
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane fade in active" id="text">
+                                    enter text below:
+                                    <br>
+                                    <textarea v-model="customText" value=""></textarea>
+                                    <br>
+                                    <button class="btn" @click="addText">Add text</button>
+                                    <br/>
+                                    <div>
+                                        <label for="font-family" style="display:inline-block">Font family:</label>
+                                        <select v-model="fontFamily">
+                                            <option value="">Please Select</option>
+                                            <option v-for="(fontFamily,index) in fontJson.fontFamily" :value="fontFamily.value">
+                                                {{ fontFamily.text }}
+                                            </option>
+                                        </select>
+                                        <br>
+                                        <label for="text-align" style="display:inline-block">Text align:</label>
+                                        <select v-model="textAlign">
+                                            <option value="">Please Select</option>
+                                            <option v-for="(textAlign,index) in fontJson.textAlign" :value="textAlign.value">
+                                                {{ textAlign.text }}
+                                            </option>
+                                        </select>
+                                        <div>
+                                            <label for="text-lines-bg-color">Background text color:</label>
+                                            <input type="color" value="" size="10" v-model="textBgColor">
+                                        </div>
+                                        <div>
+                                            <label for="text-font-size">Font size:</label>
+                                            <input type="range" value="" min="1" max="120" step="1" v-model="fontSize">
+                                        </div>
+                                        <div>
+                                            <label for="text-line-height">Line height:</label>
+                                            <input type="range" value="" min="0" max="10" step="0.1" v-model="lineHeight">
+                                        </div>
+                                        <div>
+                                            <label for="text-char-spacing">Char spacing:</label>
+                                            <input type="range" value="" min="-200" max="800" step="10" v-model="charSpacing">
+                                        </div>
+                                        <label for="text-align" style="display:inline-block">Text align:</label>
+                                        <select v-model="fontStyle">
+                                            <option value="">Please Select</option>
+                                            <option v-for="(fontStyle,index) in fontJson.fontStyle" :value="fontStyle.value">
+                                                {{ fontStyle.text }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    price:{{textPrice}}
+                                </div>
+                                <div class="tab-pane fade" id="image">
+                                    <div>
+
+                                        <a @click="imgSelect=1">Select  Art Clip</a><br/>
+                                        <a @click="imgSelect=2">Upload image</a><br/>
+                                        <a @click="imgSelect=3">Add  my art</a><br/>
+                                    </div>
+                                    <div v-if="imgSelect==1" style="border: 1px dashed #000;">
+                                        <div v-for="artImg in json.data.artImg" @click="clipSelect=artImg.name">
+                                            <a>{{artImg.name}}</a>
+                                            <div v-for="artImgValue in artImg.value" v-if="clipSelect==artImg.name">
+                                                <img :src="artImgValue.url" @click="addImage(artImgValue.url)"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="imgSelect==2">
+                                        select image:<input type="file" name="file" @change="imgPreview"/>
+                                        Palette:
+                                        <div class="swatches">
+                                            <template v-for="color in paletteColor">
+                                                <div class="swatch" :style="'background-color: ' + color"></div>
+                                            </template>
+                                        </div>
+                                        <button class="btn" @click="removeWhite">remove white</button>
+                                        <br>
+                                        <label style="display:inline-block">crafts:</label>
+                                        <select v-model="crafts">
+                                            <option value="">Please Select</option>
+                                            <option v-for="(crafts,index) in staticJson.data.imageProp.crafts" :value="crafts.value">
+                                                {{ crafts.text }}
+                                            </option>
+                                        </select>
+                                        <br>
+                                        <label style="display:inline-block">colors:</label>
+                                        <select v-model="crafts">
+                                            <option value="">Please Select</option>
+                                        </select>
+                                        <br>
+                                        <label style="display:inline-block">width:</label>
+                                        <input type="text" v-model="customImgWidth" value="">
+                                        <br/>
+                                        <label style="display:inline-block">height:</label>
+                                        <input type="text" v-model="customImgHeight" value="">
+                                        <br/>
+                                        <label style="display:inline-block">angle:</label>
+                                        <input type="text" v-model="customImgAngle" value="">
+                                    </div>
+                                    <div v-if="imgSelect==3">
+                                        <div v-for="custImg in json.data.custImg">
+                                            <img :src="custImg.url" @click="addImage(custImg.url)"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="num">
+                                    <label style="display:inline-block">num:</label>
+                                    <select v-model="numNumberState">
+                                        <option value="0">off</option>
+                                        <option value="1">on</option>
+                                    </select>
+                                    <br/>
+                                    <label style="display:inline-block">name:</label>
+                                    <select v-model="numNameState">
+                                        <option value="0">off</option>
+                                        <option value="1">on</option>
+                                    </select>
+                                    <br/>
+                                    <label style="display:inline-block">size:</label>
+                                    <select v-model="numSizeState">
+                                        <option value="1">big</option>
+                                        <option value="2">small</option>
+                                    </select>
+                                    <br/>
+                                    <button class="btn" @click="addNumber">Add number</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <button class="btn" @click="">next</button>
+                        <button class="btn" @click="save">Save</button>
+                        <button class="btn" @click="share">Share</button>
+                        totalPrice:{{basePrice+partPrice+textPrice+imagePrice}}
+                    </div>
                 </div>
             </div>
-            price:{{imagePrice}}
+            <img id="colorImg" :src="colorImg" style="display: none">
         </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <!--add text/iamge-->
-        <div>
-            operator<br/>
-            <button class="btn" @click="">next</button>
-            <button class="btn" @click="save">Save</button>
-            <button class="btn" @click="share">Share</button>
+
+        <div class="content_canvas col-md-6">
+            <canvas id="canvas" width="600" height="600"></canvas>
+            <div id='canvasAbs' class="operate-canvas">
+                <canvas id="canvas1"></canvas>
+            </div>
         </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <img id="colorImg" :src="colorImg" style="display: none">
-</div>
-<div class="footer">
+
+        <div class="col-md-2">
+            <button class="btn" onclick="view('front')">front</button><br/>
+            <button class="btn" onclick="view('left')">left</button><br/>
+            <button class="btn" onclick="view('right')">right</button><br/>
+            <button class="btn" onclick="view('back')">back</button><br/>
+            <button class="btn" onclick="save()">save</button><br/>
+            <button class="btn" onclick="share()">share</button><br/>
+            <button class="btn" onclick="note()">note</button><br/>
+
+        </div>
+    </div>
 </div>
 </body>
 </html>
 
 <script>
-    /**
-     * Created by hehuizhong on 2017/6/17.
-     */
     var staticJson = {
         "data": {
             "fontProp": {
@@ -306,131 +367,427 @@
                         "value": "Overline"
                     }
                 ]
+            },
+            "imageProp":{
+              "crafts": [
+                {"text": "embroidery",   "value": "embroidery" ,"price":12},
+                {"text": "screen printing",  "value": "screen printing","price":13},
+                {"text": "3d printing","value": "3d printing","price":14}
+              ]
             }
         }
-    }
+    };
     var json = {
         "data": {
-            "imgs":[//预加载衣服的图片和路径
-                {
-                    "name":"LEFT",
-                    "url":"./static/img/left.png",
-                    "price":21
-                },
-                {
-                    "name":"RIGHT",
-                    "url":"./static/img/right.png",
-                    "price":22
-                },
-                {
-                    "name":"BODY",
-                    "url":"./static/img/body.png",
-                    "price":23
-                }
-            ],
-            "partOptions": [//部件的数据
-                {
-                    "text": "One",
-                    "value": "A",
-                    "color": [//部件颜色和价格
-                        {"text": "Red",   "value": "red" ,"price":12},
-                        {"text": "Dark",  "value": "dark","price":13},
-                        {"text": "Yellow","value": "yellow","price":14}
-                    ],
-                    "ornament": [//附件样式和价格
-                        {"text": "ornament--1","value": "ornament1" ,"price":12},
-                        {"text": "ornament--2","value": "ornament2","price":13},
-                        {"text": "ornament--3","value": "ornament3","price":14}
-                    ]
+        }
+    };
 
-                },
-                {
-                    "text": "Two",
-                    "value": "B",
-                    "color": [
-                        {"text": "Red",   "value": "red","price":12},
-                        {"text": "Dark",  "value": "dark","price":13},
-                        {"text": "Yellow","value": "yellow","price":14}
-                    ],
-                    "ornament": [
-                        {"text": "ornament--1","value": "ornament1","price":12},
-                        {"text": "ornament--2","value": "ornament2","price":13},
-                        {"text": "ornament--3","value": "ornament3","price":14}
-                    ]
-                },
-                {
-                    "text": "Three",
-                    "value": "C",
-                    "color": [
-                        {"text": "Red",   "value": "red","price":12},
-                        {"text": "Dark",  "value": "dark","price":13},
-                        {"text": "Yellow","value": "yellow","price":14}
-                    ],
-                    "ornament": [
-                        {"text": "ornament--1","value": "ornament1","price":12},
-                        {"text": "ornament--2","value": "ornament2","price":13},
-                        {"text": "ornament--3","value": "ornament3","price":14}
-                    ]
-                }
+    var xxxjson = {
+      "front": {
+        "partOptions": [//部件的数据
+          {
+            "text": "LEFT",
+            "value": "A",
+            "url":"./static/img/right.png",
+            "price":21,
+            "color": [//部件颜色和价格
+              {"text": "Green",   "value": "#00f900" ,"price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
             ],
-            "artImg":[//可选择的系统log
-              {
-                "name":"Shapes/Symbols",
-                "value":[
-                  {
-                    "name":"Shapes1",
-                    "url":"./static/img/Peace.jpg",
-                    "price":"12"
-                  }
-                ]
-              },
-              {
-                "name":"Sports/Games",
-                "value":[]
-              },
-              {
-                "name":"Letters/Numbers",
-                "value":[]
-              },
-              {
-                "name":"Animals",
-                "value":[]
-              },
-              {
-                "name":"Emojis",
-                "value":[]
-              },
-              {
-                "name":"Mascots",
-                "value":[]
-              },
-              {
-                "name":"Nature",
-                "value":[]
-              }
+            "ornament": [//附件样式和价格
+              {"text": "ornament--1","value": "ornament1" ,"price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+
+          },
+          {
+            "text": "RIGHT",
+            "value": "B",
+            "url":"./static/img/left.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
             ],
-            "custImg":[//可选择的系统log
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          },
+          {
+            "text": "BODY",
+            "value": "C",
+            "url":"./static/img/body.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          }
+        ],
+        "artImg":[//可选择的系统log
+          {
+            "name":"Shapes/Symbols",
+            "value":[
               {
                 "name":"Shapes1",
                 "url":"./static/img/Peace.jpg",
                 "price":"12"
               }
-          ],
-            "crafts": [
-               {"text": "embroidery",   "value": "embroidery" ,"price":12},
-               {"text": "screen printing",  "value": "screen printing","price":13},
-               {"text": "3d printing","value": "3d printing","price":14}
+            ]
+          },
+          {
+            "name":"Sports/Games",
+            "value":[]
+          },
+          {
+            "name":"Letters/Numbers",
+            "value":[]
+          },
+          {
+            "name":"Animals",
+            "value":[]
+          },
+          {
+            "name":"Emojis",
+            "value":[]
+          },
+          {
+            "name":"Mascots",
+            "value":[]
+          },
+          {
+            "name":"Nature",
+            "value":[]
+          }
+        ],
+        "custImg":[//可选择的系统log
+          {
+            "name":"Shapes1",
+            "url":"./static/img/Peace.jpg",
+            "price":"12"
+          }
+        ],
+        "rect":[
+          {x: 150, y: 100},
+          {x: 440, y: 100},
+          {x: 150, y: 500},
+          {x: 440, y: 500}]
+      },
+      "left": {
+        "partOptions": [//部件的数据
+          {
+            "text": "LEFT",
+            "value": "A",
+            "url":"./static/img/right.png",
+            "price":21,
+            "color": [//部件颜色和价格
+              {"text": "Green",   "value": "#00f900" ,"price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
             ],
-          "rect":[
-             {x: 150, y: 100},
-             {x: 440, y: 100},
-             {x: 150, y: 500},
-             {x: 440, y: 500}]
-        }
+            "ornament": [//附件样式和价格
+              {"text": "ornament--1","value": "ornament1" ,"price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+
+          },
+          {
+            "text": "RIGHT",
+            "value": "B",
+            "url":"./static/img/left.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          }
+        ],
+        "artImg":[//可选择的系统log
+          {
+            "name":"Shapes/Symbols",
+            "value":[
+              {
+                "name":"Shapes1",
+                "url":"./static/img/Peace.jpg",
+                "price":"12"
+              }
+            ]
+          },
+          {
+            "name":"Sports/Games",
+            "value":[]
+          },
+          {
+            "name":"Letters/Numbers",
+            "value":[]
+          },
+          {
+            "name":"Animals",
+            "value":[]
+          },
+          {
+            "name":"Emojis",
+            "value":[]
+          },
+          {
+            "name":"Mascots",
+            "value":[]
+          },
+          {
+            "name":"Nature",
+            "value":[]
+          }
+        ],
+        "custImg":[//可选择的系统log
+          {
+            "name":"Shapes1",
+            "url":"./static/img/Peace.jpg",
+            "price":"12"
+          }
+        ],
+        "rect":[
+          {x: 50, y: 50},
+          {x: 140, y: 50},
+          {x: 50, y: 200},
+          {x: 140, y: 200}]
+      },
+      "right": {
+        "partOptions": [//部件的数据
+          {
+            "text": "LEFT",
+            "value": "A",
+            "url":"./static/img/right.png",
+            "price":21,
+            "color": [//部件颜色和价格
+              {"text": "Green",   "value": "#00f900" ,"price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [//附件样式和价格
+              {"text": "ornament--1","value": "ornament1" ,"price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+
+          },
+          {
+            "text": "RIGHT",
+            "value": "B",
+            "url":"./static/img/left.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          },
+          {
+            "text": "BODY",
+            "value": "C",
+            "url":"./static/img/body.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          }
+        ],
+        "artImg":[//可选择的系统log
+          {
+            "name":"Shapes/Symbols",
+            "value":[
+              {
+                "name":"Shapes1",
+                "url":"./static/img/Peace.jpg",
+                "price":"12"
+              }
+            ]
+          },
+          {
+            "name":"Sports/Games",
+            "value":[]
+          },
+          {
+            "name":"Letters/Numbers",
+            "value":[]
+          },
+          {
+            "name":"Animals",
+            "value":[]
+          },
+          {
+            "name":"Emojis",
+            "value":[]
+          },
+          {
+            "name":"Mascots",
+            "value":[]
+          },
+          {
+            "name":"Nature",
+            "value":[]
+          }
+        ],
+        "custImg":[//可选择的系统log
+          {
+            "name":"Shapes1",
+            "url":"./static/img/Peace.jpg",
+            "price":"12"
+          }
+        ],
+        "rect":[
+          {x: 150, y: 100},
+          {x: 440, y: 100},
+          {x: 150, y: 500},
+          {x: 440, y: 500}]
+      },
+      "back": {
+        "partOptions": [//部件的数据
+          {
+            "text": "LEFT",
+            "value": "A",
+            "url":"./static/img/right.png",
+            "price":21,
+            "color": [//部件颜色和价格
+              {"text": "Green",   "value": "#00f900" ,"price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [//附件样式和价格
+              {"text": "ornament--1","value": "ornament1" ,"price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+
+          },
+          {
+            "text": "RIGHT",
+            "value": "B",
+            "url":"./static/img/left.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          },
+          {
+            "text": "BODY",
+            "value": "C",
+            "url":"./static/img/body.png",
+            "price":22,
+            "color": [
+              {"text": "Green",   "value": "#00f900","price":12},
+              {"text": "Dark",  "value": "#000000","price":13},
+              {"text": "Yellow","value": "#FFFF00","price":14}
+            ],
+            "ornament": [
+              {"text": "ornament--1","value": "ornament1","price":12},
+              {"text": "ornament--2","value": "ornament2","price":13},
+              {"text": "ornament--3","value": "ornament3","price":14}
+            ]
+          }
+        ],
+        "artImg":[//可选择的系统log
+          {
+            "name":"Shapes/Symbols",
+            "value":[
+              {
+                "name":"Shapes1",
+                "url":"./static/img/Peace.jpg",
+                "price":"12"
+              }
+            ]
+          },
+          {
+            "name":"Sports/Games",
+            "value":[]
+          },
+          {
+            "name":"Letters/Numbers",
+            "value":[]
+          },
+          {
+            "name":"Animals",
+            "value":[]
+          },
+          {
+            "name":"Emojis",
+            "value":[]
+          },
+          {
+            "name":"Mascots",
+            "value":[]
+          },
+          {
+            "name":"Nature",
+            "value":[]
+          }
+        ],
+        "custImg":[//可选择的系统log
+          {
+            "name":"Shapes1",
+            "url":"./static/img/Peace.jpg",
+            "price":"12"
+          }
+        ],
+        "rect":[
+          {x: 150, y: 100},
+          {x: 440, y: 100},
+          {x: 150, y: 500},
+          {x: 440, y: 500}]
+      }
     };
     var canvas = new fabric.Canvas('canvas');
     var canvas1 = null;
     var filter = fabric.Image.filters;
+    //var $ = function(id){return document.getElementById(id)};
+
+
+    function save() {
+      console.log(JSON.stringify(canvas1));
+      console.log(canvas1.toSVG());
+    }
+    function share() {
+      console.log(JSON.stringify(canvas1));
+    }
+    function note() {
+    }
+
     function getActiveProp(name) {
       var object = canvas1.getActiveObject();
       if (!object) return '';
@@ -463,14 +820,14 @@
       canvas1.renderAll();
     };
 
-    new Vue({
+    var vm = new Vue({
         el: '#main',
         data: {
             lineCenterPoint: null,
             imgMap: [],
             productId: '',
             googdsId: '',
-            isSublimation: '',
+            isFabric: '',
             partSelected: '',
             partOptions: json.data.partOptions,
           imgsCount:-1,
@@ -498,10 +855,16 @@
             basePrice:0,
             partOrnamentValue:'',
             partColorValue:'',
-          rectObj:{}
+          rectObj:{},
+          numNumberState:0,
+          numNameState:0,
+          numSizeState:1,
+          numberObj:{}
+
 
         },
         created: function () {
+          view('front');
             this.init();
         },
         computed: {
@@ -546,22 +909,22 @@
         methods: {
             init: function () {
               this.basePrice = 0;
-              this.imgsCount = json.data.imgs.length;
-                for (var i = json.data.imgs.length - 1; i >= 0; i--) {
-                    this.addImage1(json.data.imgs[i].url, json.data.imgs[i].name);
-                    this.basePrice += json.data.imgs[i].price;
+              this.imgsCount = json.data.partOptions.length;
+                for (var i = json.data.partOptions.length - 1; i >= 0; i--) {
+                    this.addImage1(json.data.partOptions[i].url, json.data.partOptions[i].name,json.data.partOptions[i].value);
+                    this.basePrice += json.data.partOptions[i].price;
                 };
               this.rectObj.x = json.data.rect[0].x;
               this.rectObj.y = json.data.rect[0].y;
               this.rectObj.width = json.data.rect[1].x-json.data.rect[0].x;
               this.rectObj.height = json.data.rect[2].y-json.data.rect[0].y;
-              document.getElementById("canvasAbs").style.left = this.rectObj.x+"px";
-              document.getElementById("canvasAbs").style.top = this.rectObj.y+"px";
-              document.getElementById("canvas1").width = this.rectObj.width;
-              document.getElementById("canvas1").height = this.rectObj.height;
+              document.getElementById('canvasAbs').style.left = this.rectObj.x+15+"px";
+              document.getElementById('canvasAbs').style.top = this.rectObj.y+"px";
+              document.getElementById('canvas1').width = this.rectObj.width;
+              document.getElementById('canvas1').height = this.rectObj.height;
               canvas1 = new fabric.Canvas('canvas1');
             },
-            addImage1: function (imageUrl, imageName) {
+            addImage1: function (imageUrl, imageName,value) {
                 var _this = this;
                 fabric.Image.fromURL(imageUrl, function (image) {
 
@@ -577,7 +940,7 @@
 
                   canvas.add(image);
                   _this.imgsCount--;
-                    _this.imgMap[imageName] = image;
+                    _this.imgMap[value] = image;
                 });
             },
             addImage2: function (imageUrl) {
@@ -647,7 +1010,7 @@
                       }
                 });
             },
-          addImage: function (imageUrl) {
+            addImage: function (imageUrl) {
                 var self = this;
                 fabric.Image.fromURL(imageUrl, function (img) {
                     img.scale(0.5).set({
@@ -710,9 +1073,9 @@
             addText: function () {
                 var text = this.customText;
 
-                var textSample = new fabric.IText(text, {
-                    left: 300,
-                    top: 200,
+                var textSample = new fabric.Text(text, {
+                    left: 100,
+                    top: 50,
                     fontFamily: 'helvetica',
                     fill: '#000',
                     scaleX: 0.5,
@@ -725,6 +1088,30 @@
                 });
               canvas1.add(textSample);
             },
+          addNumber: function (){
+            // group
+            var textName = new fabric.Text('Name', {
+              top: 50,
+              fill: '#333',
+              fontFamily: 'Helvetica',
+              fontSize: 80,
+              textAlign:'Center'
+            });
+            var textNumber = new fabric.Text('00', {
+              top: 150,
+              fill: '#333',
+              fontFamily: 'Helvetica',
+              fontSize: 150,
+              textAlign:'Center'
+            });
+            this.numberObj.name = textName;
+            this.numberObj.number = textNumber;
+            if(this.numNumberState==='1'){
+              canvas1.add(textName);
+            }if(this.numNameState==='1'){
+              canvas1.add(textNumber);
+            }
+          },
             imgPreview: function (e) {
                 var _this = this;
                 if (window.FileReader) {
@@ -742,7 +1129,7 @@
                     /*
                      var img = document.getElementById("preview");
                      img.src = e.target.result;*/
-                  _this.addImage(e.target.result, e.target.result);
+                  _this.addImage2(e.target.result, e.target.result);
                   _this.colorImg = e.target.result;
                 };
                 reader.readAsDataURL(file);
@@ -752,11 +1139,27 @@
                 obj.filters[index] = filter;
                 obj.applyFilters(canvas1.renderAll.bind(canvas1));
             },
+            applyFilter1: function (index, filter) {
+                var obj =  this.imgMap[this.partSelected]
+                obj.filters[index] = filter;
+                var timeStart = +new Date();
+                obj.applyFilters();
+                var timeEnd = +new Date();
+                var dimString = canvas. _objects[0].width + ' x ' + canvas. _objects[0].height;
+                canvas.renderAll();
+
+            },
+            applyFilter2: function(index, filter) {
+              var obj = canvas1.getActiveObject();
+              obj.filters[index] = filter;
+              obj.applyFilters();
+              canvas1.renderAll();
+            },
             removeWhite: function () {
-                this.applyFilter(2, new filter.RemoveWhite({
-                        threshold: 40,
-                        distance: 140
-                    }));
+              this.applyFilter2(2,  new filter.RemoveColor({
+                    color: "#ffffff",
+                    distance: 0.50
+                }));
             },
             moveToCenter: function (target) {
 
@@ -787,14 +1190,39 @@
             changeColor: function () {
                 this.googdsId = 222;
             },
-            save: function () {
-                console.log(JSON.stringify(canvas1));
-            },
-            share: function () {
-                console.log(JSON.stringify(canvas1));
+          collapseOneNext: function () {
+              $('[href="#collapseTwo"]').first().trigger("click");
+          },
+           setActiveStyleNum: function(value) {
+             if(this.numberObj.name) {
+               if(value==="1"){//big
+                 this.numberObj.name.set("fontSize", '80');
+               }else if(value==="2"){//small
+                 this.numberObj.name.set("fontSize", '40');
+               }
+             }
+             if(this.numberObj.number){
+               if(value==="1"){//big
+                 this.numberObj.number.set("fontSize", '150');
+               }else if(value==="2"){//small
+                 this.numberObj.number.set("fontSize", '75');
+               }
+             }
+             canvas1.renderAll();
             }
         },
         watch:{
+            "customText":function (curVal,oldVal){
+              setActiveProp('text', curVal);
+            },
+            "partColorValue":function (curVal,oldVal){
+                setActiveProp('fontFamily', curVal.toLowerCase());
+                this.applyFilter1(16,new filter.BlendColor({
+                  color: curVal,
+                  mode: "tint",
+                  alpha: 0.5
+                }));
+            },
             "fontFamily":function (curVal,oldVal){
                 setActiveProp('fontFamily', curVal.toLowerCase());
             },
@@ -828,8 +1256,8 @@
             "imgsCount":function (curVal,oldVal){
               if(curVal ===0){
                 //居中线
-                var line = new fabric.Line([0, 0, 0, 600], {
-                  left: 300,
+                var line = new fabric.Line([0, 0, 0, 400], {
+                  left: 145,
                   top: 0,
                   stroke: '#000',
                   hasBorders: false,
@@ -837,10 +1265,41 @@
                   selectable: false
                 });
                 this.lineCenterPoint = line.getCenterPoint();
-                canvas.add(line);
+                canvas1.add(line);
                 //canvas1.setOverlayImage('./static/img/a.png', canvas1.renderAll.bind(canvas1));
+              }
+            },
+            "numSizeState":function (curVal,oldVal){
+              this.setActiveStyleNum(curVal);
+            },
+            "numNumberState":function (curVal,oldVal){
+              if(this.numberObj.number) {
+                if(curVal==="0"){
+                  canvas1.remove(this.numberObj.number);
+                }else if(curVal==="1"){
+                  canvas1.add(this.numberObj.number);
+                }
+              }
+            },
+            "numNameState":function (curVal,oldVal){
+              if(this.numberObj.name) {
+                if(curVal==="0"){
+                  canvas1.remove(this.numberObj.name);
+                }else if(curVal==="1"){
+                  canvas1.add(this.numberObj.name);
+                }
               }
             }
         }
     })
+
+
+    function view(value) {
+      json.data = xxxjson[value];
+      if(vm){
+        canvas.clear()
+        canvas1.dispose()
+        vm.init();
+      }
+    }
 </script>
