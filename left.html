@@ -1,0 +1,222 @@
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseOne">
+                    Product
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in">
+            <div class="panel-body">
+                price:{{basePrice}}
+                <br/>
+                <a href="#" @click="changeProduct">change product</a>
+                <br/>
+                Material: Fabric <input type="checkbox" :value="isFabric"/>
+                <br/>
+                Size:  <a href="#" @click="changeColor">change Size</a>
+                <br/>
+                Color: <a href="#" @click="changeColor">change color</a>
+                <br/>
+                <button class="btn" @click="collapseOneNext">next</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseTwo">
+                    Accessories
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div>
+                    price:{{partPrice}}
+                    <br/>
+                    select part
+                    <select v-model="partSelected">
+                        <option value="">Please Select</option>
+                        <option v-for="(option,index) in partOptions" :value="option.value">
+                            {{ option.text }}
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <div v-for="(option,index) in partOptions" v-show="partSelected==option.value">
+                        <span>color-{{index}}</span>
+                        <select v-model="partColorValue">
+                            <option v-for="(color,index) in option.color" :value="color.value">
+                                {{ color.text }}
+                            </option>
+                        </select>
+                        <br/>
+                        <span>ornament-{{index}}</span>
+                        <select v-model="partOrnamentValue">
+                            <option v-for="(ornament,index) in option.ornament" :value="ornament.value">
+                                {{ ornament.text }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseThree">
+                    Logo
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active"><a href="#text" data-toggle="tab">Text</a></li>
+                    <li><a href="#image" data-toggle="tab">Image</a></li>
+                    <li><a href="#num" data-toggle="tab">Name&Num</a></li>
+                </ul>
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="text">
+                        enter text below:
+                        <br>
+                        <textarea v-model="customText" value=""></textarea>
+                        <br>
+                        <button class="btn" @click="addText">Add text</button>
+                        <br/>
+                        <div>
+                            <label style="display:inline-block">Font family:</label>
+                            <select v-model="fontFamily">
+                                <option value="">Please Select</option>
+                                <option v-for="(fontFamily,index) in fontJson.fontFamily" :value="fontFamily.value">
+                                    {{ fontFamily.text }}
+                                </option>
+                            </select>
+                            <br>
+                            <label style="display:inline-block">Text align:</label>
+                            <select v-model="textAlign">
+                                <option value="">Please Select</option>
+                                <option v-for="(textAlign,index) in fontJson.textAlign" :value="textAlign.value">
+                                    {{ textAlign.text }}
+                                </option>
+                            </select>
+                            <div>
+                                <label>Background text color:</label>
+                                <input type="color" value="" size="10" v-model="textBgColor">
+                            </div>
+                            <div>
+                                <label>Font size:</label>
+                                <input type="range" value="" min="1" max="120" step="1" v-model="fontSize">
+                            </div>
+                            <div>
+                                <label>Line height:</label>
+                                <input type="range" value="" min="0" max="10" step="0.1" v-model="lineHeight">
+                            </div>
+                            <div>
+                                <label>Char spacing:</label>
+                                <input type="range" value="" min="-200" max="800" step="10" v-model="charSpacing">
+                            </div>
+                            <label style="display:inline-block">Text align:</label>
+                            <select v-model="fontStyle">
+                                <option value="">Please Select</option>
+                                <option v-for="(fontStyle,index) in fontJson.fontStyle" :value="fontStyle.value">
+                                    {{ fontStyle.text }}
+                                </option>
+                            </select>
+                        </div>
+                        price:{{textPrice}}
+                    </div>
+                    <div class="tab-pane fade" id="image">
+                        <div>
+
+                            <a @click="imgSelect=1">Select  Art Clip</a><br/>
+                            <a @click="imgSelect=2">Upload image</a><br/>
+                            <a @click="imgSelect=3">Add  my art</a><br/>
+                        </div>
+                        <div v-if="imgSelect==1" style="border: 1px dashed #000;">
+                            <div v-for="artImg in json.data.artImg" @click="clipSelect=artImg.name">
+                                <a>{{artImg.name}}</a>
+                                <div v-for="artImgValue in artImg.value" v-if="clipSelect==artImg.name">
+                                    <img :src="artImgValue.url" @click="addImage(artImgValue.url)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="imgSelect==2">
+                            select image:<input type="file" name="file" @change="imgPreview"/>
+                            Palette:
+                            <div class="swatches">
+                                <template v-for="color in paletteColor">
+                                    <div class="swatch" :style="'background-color: ' + color"></div>
+                                </template>
+                            </div>
+                            <button class="btn" @click="removeWhite">remove white</button>
+                            <br>
+                            <label style="display:inline-block">crafts:</label>
+                            <select v-model="crafts">
+                                <option value="">Please Select</option>
+                                <option v-for="(crafts,index) in staticJson.data.imageProp.crafts" :value="crafts.value">
+                                    {{ crafts.text }}
+                                </option>
+                            </select>
+                            <br>
+                            <label style="display:inline-block">colors:</label>
+                            <select v-model="crafts">
+                                <option value="">Please Select</option>
+                            </select>
+                            <br>
+                            <label style="display:inline-block">width:</label>
+                            <input type="text" v-model="customImgWidth" value="">
+                            <br/>
+                            <label style="display:inline-block">height:</label>
+                            <input type="text" v-model="customImgHeight" value="">
+                            <br/>
+                            <label style="display:inline-block">angle:</label>
+                            <input type="text" v-model="customImgAngle" value="">
+                        </div>
+                        <div v-if="imgSelect==3">
+                            <div v-for="custImg in json.data.custImg">
+                                <img :src="custImg.url" @click="addImage(custImg.url)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="num">
+                        <label style="display:inline-block">num:</label>
+                        <select v-model="numNumberState">
+                            <option value="0">off</option>
+                            <option value="1">on</option>
+                        </select>
+                        <br/>
+                        <label style="display:inline-block">name:</label>
+                        <select v-model="numNameState">
+                            <option value="0">off</option>
+                            <option value="1">on</option>
+                        </select>
+                        <br/>
+                        <label style="display:inline-block">size:</label>
+                        <select v-model="numSizeState">
+                            <option value="1">big</option>
+                            <option value="2">small</option>
+                        </select>
+                        <br/>
+                        <button class="btn" @click="addNumber">Add number</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <button class="btn" @click="">next</button>
+            <button class="btn" @click="save">Save</button>
+            <button class="btn" @click="share">Share</button>
+            totalPrice:{{basePrice+partPrice+textPrice+imagePrice}}
+        </div>
+    </div>
+</div>
