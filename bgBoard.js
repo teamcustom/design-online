@@ -58,6 +58,18 @@ Vue.component('bg-board', {
       this.bgCanvas.renderAll();
 
     },
+    loadPattern: function (url,partSelected) {
+      debugger
+      var obj =  this.imgMap[partSelected];
+      var _this = this;
+      fabric.util.loadImage(url, function(img) {
+        obj.set('fill', new fabric.Pattern({
+          source: img,
+          repeat: 'repeat'
+        }));
+        _this.bgCanvas.renderAll();
+      });
+    },
     toSVG:function () {
       return this.opCanvas.toSVG();
     },

@@ -20,6 +20,8 @@ Vue.component('left', {
       partOptions: this.data.data.partOptions,
       partOrnamentValue:'',
       partColorValue:'',
+      //sublimation
+      sublimations:this.data.data.sublimation,
       //step3
       //step3 font
       fontJson: this.staticData.data.fontProp,
@@ -193,6 +195,84 @@ Vue.component('left', {
         }
       }
       this.$parent.$refs.opBoard.renderAll();
+    },
+    sublimationPatternChange: function (e) {
+      var patterns = [];
+      var part = $(e.target).attr('data-role');
+      var selectVal = e.target.value;
+      var price = 0;
+      var allPrice = 0;
+      var allSublimationPriceSpan = $(e.target).parent().parent().find('[data-role="all-sublimation"]');
+      var sublimationsPriceSpan = $(e.target).parent().parent().find('[data-role="sublimation"]');
+      var sublimationPriceSpan = $(e.target).parent().find('[data-role="sublimation"]');
+      var patternPriceSpan = $(e.target).parent().find('[data-role="pattern"]');
+      var colorPrice = $(e.target).parent().find('[data-role="color"]').text()||0;
+      for(var i=0;i<this.sublimations.length;i++){
+        if(this.sublimations[i].value===part){
+          patterns = this.sublimations[i].patterns;
+          break;
+        }
+      }
+      for(var i=0;i<patterns.length;i++){
+        if(patterns[i].value===selectVal){
+          price = patterns[i].price;
+          patternPriceSpan.text(price);
+          sublimationPriceSpan.text(parseInt(colorPrice)+price);
+          //this.$parent.$refs.bgBoard.loadPattern(patterns[i].url,part);
+          var imageElement = document.createElement('img');
+          imageElement.src = patterns[i].url;
+          var fImage = new fabric.Image(imageElement);
+          this.$parent.$refs.bgBoard.applyFilter(20, new this.filter.BlendImage({
+              image: fImage,
+              mode:"mask"
+            }),part);
+          break;
+        }
+      }
+      for(var i=0;i<sublimationsPriceSpan.length;i++){
+        if($(sublimationsPriceSpan[i]).text() && parseInt($(sublimationsPriceSpan[i]).text())){
+          allPrice += parseInt($(sublimationsPriceSpan[i]).text());
+        }
+      }
+      allSublimationPriceSpan.text(allPrice)
+    },
+    sublimationColorChange: function (e) {
+      var colors = [];
+      var part = $(e.target).attr('data-role');
+      var selectVal = e.target.value;
+      var price = 0;
+      var allPrice = 0;
+      var allSublimationPriceSpan = $(e.target).parent().parent().find('[data-role="all-sublimation"]');
+      var sublimationsPriceSpan = $(e.target).parent().parent().find('[data-role="sublimation"]');
+      var sublimationPriceSpan = $(e.target).parent().find('[data-role="sublimation"]');
+      var colorPriceSpan = $(e.target).parent().find('[data-role="color"]');
+      var patternPrice = $(e.target).parent().find('[data-role="pattern"]').text()||0;
+      for(var i=0;i<this.sublimations.length;i++){
+        if(this.sublimations[i].value===part){
+          colors = this.sublimations[i].colors;
+          break;
+        }
+      }
+      for(var i=0;i<colors.length;i++){
+        if(colors[i].value===selectVal){
+          price = colors[i].price;
+          colorPriceSpan.text(price);
+          sublimationPriceSpan.text(parseInt(patternPrice)+price);
+          this.$parent.$refs.bgBoard.loadPattern(colors[i].url,part);
+          this.$parent.$refs.bgBoard.applyFilter(16,new this.filter.BlendColor({
+            color: selectVal,
+            mode: "tint",
+            alpha: 0.5
+          }),part);
+          break;
+        }
+      }
+      for(var i=0;i<sublimationsPriceSpan.length;i++){
+        if($(sublimationsPriceSpan[i]).text() && parseInt($(sublimationsPriceSpan[i]).text())){
+          allPrice += parseInt($(sublimationsPriceSpan[i]).text());
+        }
+      }
+      allSublimationPriceSpan.text(allPrice)
     }
   },
   watch:{

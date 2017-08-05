@@ -81,29 +81,57 @@
             </div>
             <div id="collapseTwo" class="panel-collapse collapse">
                 <div class="panel-body">
-                    <div>
-                        <br/>
-                        select part
-                        <select v-model="partSelected">
-                            <option value="">Please Select</option>
-                            <option v-for="(option,index) in partOptions" :value="option.value">
-                                {{ option.text }}
-                            </option>
-                        </select>
+                    <div id="normal">
+                        <div>
+                            <br/>
+                            select part
+                            <select v-model="partSelected">
+                                <option value="">Please Select</option>
+                                <option v-for="(option,index) in partOptions" :value="option.value">
+                                    {{ option.text }}
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <div v-for="(option,index) in partOptions" v-show="partSelected==option.value">
+                                <span>color-{{index}}</span>
+                                <select v-model="partColorValue">
+                                    <option v-for="(color,index) in option.color" :value="color.value">
+                                        {{ color.text }}
+                                    </option>
+                                </select>
+                                <br/>
+                                <span>ornament-{{index}}</span>
+                                <select v-model="partOrnamentValue">
+                                    <option v-for="(ornament,index) in option.ornament" :value="ornament.value">
+                                        {{ ornament.text }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div v-for="(option,index) in partOptions" v-show="partSelected==option.value">
-                            <span>color-{{index}}</span>
-                            <select v-model="partColorValue">
-                                <option v-for="(color,index) in option.color" :value="color.value">
-                                    {{ color.text }}
+                    <HR style="BORDER-RIGHT: #00686b 1px dotted; BORDER-TOP: #00686b 1px dotted; BORDER-LEFT: #00686b 1px dotted; BORDER-BOTTOM: #00686b 1px dotted" noShade SIZE=1>
+                    <div id="sublimation">
+                        ÈÈÉý»ª $<span data-role="all-sublimation">0</span>
+                        <div v-for="(sublimation, index) in sublimations">
+                            <br/>
+                            {{sublimation.text}} $<span data-role="sublimation">0</span>
+                            <br/>
+                            pattern $<span data-role="pattern">0</span>
+                            <br/>
+                            <select @change="sublimationPatternChange" :data-role="sublimation.value">
+                                <option value="">Please Select</option>
+                                <option v-for="(pattern,indexP) in sublimation.patterns" :value="pattern.value">
+                                    {{ pattern.text }}
                                 </option>
                             </select>
                             <br/>
-                            <span>ornament-{{index}}</span>
-                            <select v-model="partOrnamentValue">
-                                <option v-for="(ornament,index) in option.ornament" :value="ornament.value">
-                                    {{ ornament.text }}
+                            color $<span data-role="color">0</span>
+                            <br/>
+                            <select @change="sublimationColorChange" :data-role="sublimation.value">
+                                <option value="">Please Select</option>
+                                <option v-for="(color,indexC) in sublimation.colors" :value="color.value">
+                                    {{ color.text }}
                                 </option>
                             </select>
                         </div>
@@ -433,6 +461,54 @@
             {"text": "ornament--1","value": "ornament1","price":12},
             {"text": "ornament--2","value": "ornament2","price":13},
             {"text": "ornament--3","value": "ornament3","price":14}
+          ]
+        }
+      ],
+      "sublimation":[
+        {
+          "text":"BODY",
+          "value": "C",
+          "patterns":[
+            {
+              "text": "1",
+              "value": "1",
+              "url":"./static/img/greyfloral.png",
+              "price":12
+            },
+            {
+              "text": "2",
+              "value": "2",
+              "url":"./static/img/honey_im_subtle.png",
+              "price":12
+            }
+          ],
+          "colors":[
+            {"text": "Green",   "value": "#00f900","price":12},
+            {"text": "Dark",  "value": "#000000","price":13},
+            {"text": "Yellow","value": "#FFFF00","price":14}
+          ]
+        },
+        {
+          "text":"LEFT",
+          "value": "A",
+          "patterns":[
+            {
+              "text": "1",
+              "value": "1",
+              "url":"./static/img/greyfloral.png",
+              "price":12
+            },
+            {
+              "text": "2",
+              "value": "2",
+              "url":"./static/img/honey_im_subtle.png",
+              "price":12
+            }
+          ],
+          "colors":[
+            {"text": "Green",   "value": "#00f900","price":12},
+            {"text": "Dark",  "value": "#000000","price":13},
+            {"text": "Yellow","value": "#FFFF00","price":14}
           ]
         }
       ],
