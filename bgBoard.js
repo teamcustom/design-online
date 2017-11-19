@@ -2,16 +2,8 @@
  * Created by hehuizhong on 2017/7/22.
  */
 Vue.component('bg-board', {
-  template: '<canvas id="bgCanvas" :width="width" :height="height"></canvas>',
+  template: '<canvas id="bgCanvas">(Your browser doesn\'t support canvas)</canvas>',
   props:{
-    width: {
-      type: Number,
-      default : 600
-    },
-    height: {
-      type: Number,
-      default : 600
-    },
     imgUrls: {
       type: Array,
       default () {
@@ -27,6 +19,8 @@ Vue.component('bg-board', {
   },
   created () {
     this.$nextTick(() => {
+      this.$el.width = this.$el.parentElement.offsetWidth ||this.$el.parentElement.clientWidth;
+      this.$el.height = this.$el.parentElement.offsetHeight ||this.$el.parentElement.clientHeight;
       this.bgCanvas = new fabric.Canvas('bgCanvas');
       for (var i = this.imgUrls.length - 1; i >= 0; i--) {
         this._addImage(this.imgUrls[i].url, this.imgUrls[i].name,this.imgUrls[i].value);
@@ -59,7 +53,6 @@ Vue.component('bg-board', {
 
     },
     loadPattern: function (url,partSelected) {
-      debugger
       var obj =  this.imgMap[partSelected];
       var _this = this;
       fabric.util.loadImage(url, function(img) {

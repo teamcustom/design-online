@@ -3,7 +3,7 @@
  */
 Vue.component('op-board', {
   template: '<div ref="canvasAbs">'+
-              '<canvas id="opCanvas" :width="width" :height="height"></canvas>'+
+              '<canvas id="opCanvas" :width="width" :height="height">(Your browser doesn\'t support canvas)</canvas>'+
             '</div>',
   props:{
     rect: {
